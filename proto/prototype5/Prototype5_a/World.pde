@@ -158,8 +158,11 @@ class World extends FWorld
     }
     
     for (Thing t : things)
-    {      
-      t.step(this);
+    {
+      if (t instanceof Munchkin)
+      {
+        t.step(this);
+      }
     }
 
     for (Thing t: things)

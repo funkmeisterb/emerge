@@ -91,6 +91,7 @@ SoundOscClient oscSound; // send information to the sound system
 World    world;
 volatile boolean started = true;
 boolean       cursorAction = true;
+BoothConfig thisBooth;
 
 // ============================================
 // Overall initialization
@@ -116,59 +117,14 @@ void setup()
   oscLogic = new LogicOscClientServer(MAXMSP_LOGIC_IP, DONUT_LOGIN_PORT, MAXMSP_LOGIC_PORT_OUT); 
   oscFiducials = new FiducialOscClientServer(TUIO_TAG_IP, TUIO_TAG_PORT);
   oscSound = new SoundOscClient(SOUND_OSC_IP, SOUND_OSC_PORT);
-    
+   
+  // Compute all the information about the current booth
+  thisBooth = new BoothConfig();
+ 
   // Launch the Qualia agents
   if (platform == WINDOWS)
   {
-    // Start by launching required number of Qualia OSC agents
-    for (int i=(BOOTHID-1)*N_QUALIA_OSC_AGENTS; i<=(BOOTHID-1)*N_QUALIA_OSC_AGENTS+N_QUALIA_OSC_AGENTS-1; i++)
-    {
-      String execFullPath = "C:/Qualia/QualiaOSC.exe";
-      
-      String actionParams = String.valueOf(N_ACTIONS_PER_DIM);
-      for (int j=1; j<ACTION_DIM; j++)
-      {
-        actionParams += "," + String.valueOf(N_ACTIONS_PER_DIM);
-      }
-      
-      String[] execParams = { execFullPath, String.valueOf(i), String.valueOf(OBSERVATION_DIM), String.valueOf(ACTION_DIM), actionParams, "-softmax", "-port", String.valueOf(QUALIA_OSC_BASE_PORT), "-rport", String.valueOf(BOOTH_OSC_IN_PORT) };
-      Process p = open(execParams);
-      println("Booth " + BOOTHID + "\tLaunched Qualia reinforcement learning agent " + i);
-  
-      try
-      {
-        Thread.sleep(100);
-      }
-      catch (InterruptedException e)
-      {
-        println(e);
-      }
-    }
-    
-    // Then launch required number of Qualia behaviour tree agents
-    for (int i=(BOOTHID-1)*N_QUALIA_OSC_AGENTS+N_QUALIA_OSC_AGENTS; i<=(BOOTHID-1)*N_QUALIA_OSC_AGENTS+N_QUALIA_OSC_AGENTS + (BOOTHID-1)*N_QUALIA_BTREE_AGENTS+N_QUALIA_BTREE_AGENTS-1; i++)
-    {
-      String execFullPath = "C:/Qualia/QualiaBTree.exe";
-      
-      String actionParams = String.valueOf(N_ACTIONS_PER_DIM);
-      for (int j=1; j<ACTION_DIM; j++)
-      {
-        actionParams += "," + String.valueOf(N_ACTIONS_PER_DIM);
-      }
-      
-      String[] execParams = { execFullPath, String.valueOf(i), String.valueOf(OBSERVATION_DIM), String.valueOf(ACTION_DIM), actionParams, "-port", String.valueOf(QUALIA_OSC_BASE_PORT), "-rport", String.valueOf(BOOTH_OSC_IN_PORT) };
-      Process p = open(execParams);
-      println("Booth " + BOOTHID + "\tLaunched Qualia behaviour tree agent " + i);
-  
-      try
-      {
-        Thread.sleep(100);
-      }
-      catch (InterruptedException e)
-      {
-        println(e);
-      }
-    }
+    thisBooth.launchMunchkins();
   }
   else
   {
@@ -183,13 +139,15 @@ void setup()
       println(e);
     }
   }
-  
     
   // Wait for init and start messages.
   // Wait for init().
   try
   {
-    while (!osc.getManager().allMarked()) Thread.sleep(100);
+    while (!osc.getManager().allMarked())
+    {
+      Thread.sleep(100);
+    }
     println("Init done");
     osc.getManager().unmarkAll();
     for (int i=(BOOTHID-1)*N_QUALIA_AGENTS; i<=(BOOTHID-1)*N_QUALIA_AGENTS+N_QUALIA_AGENTS-1; i++)

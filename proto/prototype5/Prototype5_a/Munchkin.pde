@@ -1,5 +1,5 @@
 // ******************************************************************
-// This class represent a reinforcement learning agent, aka a munchkin.
+// This class represents a reinforcement learning agent, aka a munchkin.
 // ******************************************************************
 class Munchkin extends Thing
 {
