@@ -10,6 +10,8 @@ class Donut extends Thing
   int lastPosY;
   int msLastTargetPosition; // the time of the last target position
   boolean soundLoggedOut = false; // whether or not the donut has been logged out of the sound system
+  int soundFrameRate = 10;
+  int msLastSoundSend = 0;
   
   // ============================================
   // Constructor
@@ -22,6 +24,7 @@ class Donut extends Thing
     targetPosX = 50;
     targetPosY = 50;
     msLastTargetPosition = millis(); // simulate initial instructions
+    msLastSoundSend = millis();
   }
   
   // ============================================
@@ -80,6 +83,10 @@ class Donut extends Thing
     }
     
     oscLogic.sendDonutPhysics(this);
-    oscSound.sendDonutPhysics(this);
+    if (millis() - msLastSoundSend > 1000/soundFrameRate)
+    {
+      oscSound.sendDonutPhysics(this);
+      msLastSoundSend = millis();
+    }
   }
 }
