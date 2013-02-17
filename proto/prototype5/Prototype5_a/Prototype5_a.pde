@@ -27,14 +27,9 @@ final int   N_QUALIA_OSC_AGENTS = 12;
 final int   N_QUALIA_BTREE_AGENTS = 0;
 final int   N_QUALIA_AGENTS = N_QUALIA_OSC_AGENTS + N_QUALIA_BTREE_AGENTS;
 
-final float MUNCHKIN_ATTRACTION_FACTOR = (ATTRACTION_MODE ? 1e5f : 1000.0f);
 final int   MUNCHKIN_ATTRACTION_RADIUS   = (ATTRACTION_MODE ? 300 : 100);
 final float MUNCHKIN_OBSERVATION_RADIUS = 100;
 //final float MUNCHKIN_OBSERVATION_RADIUS_FACTOR = 4;
-final float MUNCHKIN_RESTITUTION = 0.2f;
-final float MUNCHKIN_DAMPING     = 10.0f;
-final float MUNCHKIN_FRICTION    = 0.0f;
-final float MUNCHKIN_DENSITY     = 1.0f;
 
 // Donut related
 final int   N_DONUTS = 1; // 216

@@ -17,10 +17,10 @@ class Munchkin extends Thing
     this.nation = nation;
     setFillColor(getColor());
 
-    setDamping(MUNCHKIN_DAMPING);
-    setRestitution(MUNCHKIN_RESTITUTION);
-    setDensity(MUNCHKIN_DENSITY);
-    setFriction(MUNCHKIN_FRICTION);
+    setDamping(thisBooth.munchkinDamping);
+    setRestitution(thisBooth.munchkinRestitution);
+    setDensity(thisBooth.munchkinDensity);
+    setFriction(thisBooth.munchkinFriction);
     
 //    setDamping(BOT_DAMPING);
 //    setAngularDamping(BOT_ANGULAR_DAMPING);
@@ -94,7 +94,7 @@ class Munchkin extends Thing
 
       float d = distance(x(), y(), n.x(), n.y());
       
-      float g = (getMass() * n.getMass()) / (d*d + 1e-10f) * MUNCHKIN_ATTRACTION_FACTOR; // gravitation force
+      float g = (getMass() * n.getMass()) / (d*d + 1e-10f) * thisBooth.munchkinAttractionFactor; // gravitation force
       if (!attracted)
         g = -g;
 

@@ -10,31 +10,61 @@ class BoothConfig
   final static String cuddlerBatchRLModelFile = "C:/Qualia/cuddler-attraction-obs5_nhu5_all.dat";
   final static String lonerBatchRLModelFile   = "C:/Qualia/loner-attraction-obs5_nhu5_all.dat";
   final static String prudentBatchRLModelFile = "C:/Qualia/prudent-attraction-obs5_nhu5_all.dat";
+  
+  float munchkinAttractionFactor = (ATTRACTION_MODE ? 1e5f : 1000.0f);
+  float munchkinRestitution = 0.2f;
+  float munchkinDamping     = 10.0f;
+  float munchkinFriction    = 0.0f;
+  float munchkinDensity     = 1.0f;
 
   final int totalNumMunchkins = 12;
   int numRLmunchkins = 0; // # of reinforcement learning agents at this booth
   int numBTmunchkins = 0; // # of behaviour tree agents at this booth
-    
+  
   public BoothConfig()
   {
     switch (BOOTHID)
     {
+      // Cuddlers / bouncy world
       case 1:
         numRLmunchkins = 11;
         numBTmunchkins = 1;
+        munchkinAttractionFactor = 2e5f;
+        munchkinRestitution = 1.0f;
+        munchkinDamping = 2.5f;
+        munchkinFriction = 0.0f;
+        munchkinDensity = 1.0f;
         break;
+      // Loners / fricative world
       case 2:
         numRLmunchkins = 11;
         numBTmunchkins = 1;
+        munchkinAttractionFactor = 1e5f;
+        munchkinRestitution = 0.2f;
+        munchkinDamping = 1.0f;
+        munchkinFriction = 50.0f;
+        munchkinDensity = 1.0f;
         break;
+      // Prudent / heavy world
       case 3:
-        numRLmunchkins = 11;
-        numBTmunchkins = 1;
+        numRLmunchkins = 12;
+        numBTmunchkins = 0;
+        munchkinAttractionFactor = 1e5f;
+        munchkinRestitution = 0.2f;
+        munchkinDamping = 5.0f;
+        munchkinFriction = 0.0f;
+        munchkinDensity = 1.5f;
         break;
+      // BTree (attraction/repulsion) and cuddlers / standard world
       case 4:
       default:
         numRLmunchkins = 4;
         numBTmunchkins = 8;
+        munchkinAttractionFactor = 1e5f;
+        munchkinRestitution = 0.2f;
+        munchkinDamping = 2.0f;
+        munchkinFriction = 0.0f;
+        munchkinDensity = 1.0f;
         break;
     }
     
@@ -53,14 +83,17 @@ class BoothConfig
       {
         case 1:
           nation = Thing.RED;
-          softmaxTemp = 0.5f;
+          softmaxTemp = 0.2f;
           break;
         case 2:
           nation = Thing.BLUE;
           softmaxTemp = 0.5f;
           break;
         case 3:
-          nation = Thing.GREEN;
+          if (i % 2 == 0)
+            nation = Thing.GREEN;
+          else
+            nation = Thing.RED;
           softmaxTemp = 0.5f;
           break;
         case 4:
@@ -86,9 +119,8 @@ class BoothConfig
       }
 
       String[] execArgs = { String.valueOf(i), String.valueOf(OBSERVATION_DIM), String.valueOf(ACTION_DIM), actionParams, "-softmax", "-temp", String.valueOf(softmaxTemp),
-                            "-port", String.valueOf(QUALIA_OSC_BASE_PORT), "-rport", String.valueOf(BOOTH_OSC_IN_PORT), 
-                            "-load", batchRLModelFile };
-      
+                              "-port", String.valueOf(QUALIA_OSC_BASE_PORT), "-rport", String.valueOf(BOOTH_OSC_IN_PORT), 
+                              "-load", batchRLModelFile };
       munchkinConfig.put(i, new MunchkinParams(rlExecFullPath, execArgs, nation));
     }
     
