@@ -122,6 +122,7 @@ class BoothConfig
                               "-port", String.valueOf(QUALIA_OSC_BASE_PORT), "-rport", String.valueOf(BOOTH_OSC_IN_PORT), 
                               "-load", batchRLModelFile };
       munchkinConfig.put(i, new MunchkinParams(rlExecFullPath, execArgs, nation));
+      println("Configuring reinforcement learning munchkin " + i);
     }
     
     // Then create the required number of Qualia behaviour tree agents
@@ -135,6 +136,7 @@ class BoothConfig
       String[] execArgs = { String.valueOf(i), String.valueOf(OBSERVATION_DIM), String.valueOf(ACTION_DIM), actionParams, "-port", String.valueOf(QUALIA_OSC_BASE_PORT), "-rport", String.valueOf(BOOTH_OSC_IN_PORT) };
       int nation = Thing.RED;
       munchkinConfig.put(i, new MunchkinParams(btExecFullPath, execArgs, nation));
+      println("Configuring behaviour tree munchkin " + i);
     }
   }
   
@@ -146,6 +148,7 @@ class BoothConfig
       Map.Entry me = (Map.Entry)it.next();
       MunchkinParams current = (MunchkinParams)me.getValue();
       current.run();
+      println("Launched munchkin with ID " + current.execArgs[0]);
       
       try
       {
