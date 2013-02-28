@@ -134,7 +134,21 @@ void setup()
       println(e);
     }
   }
-    
+  
+  // Wait for the right number of agents to be in the manager
+  try
+  {
+    while (osc.getManager().instances.size() != thisBooth.totalNumMunchkins)
+    {
+      println("Not ready yet...");
+      Thread.sleep(10);
+    }
+  }
+  catch (InterruptedException e)
+  {
+    println(e);
+  }
+  
   // Wait for init and start messages.
   // Wait for init().
   try
